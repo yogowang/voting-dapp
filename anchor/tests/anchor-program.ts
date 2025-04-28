@@ -1,16 +1,14 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
+import { BankrunProvider, startAnchor } from "anchor-bankrun";
 import { AnchorProgram } from "../target/types/anchor_program";
+const IDL = require("../target/idl/anchor_program.json");
 
-describe("anchor-program", () => {
-  // Configure the client to use the local cluster.
-  anchor.setProvider(anchor.AnchorProvider.env());
+describe("voting", () => {
 
-  const program = anchor.workspace.anchorProgram as Program<AnchorProgram>;
+  it("voting initialized!", async () => {
+    const context = await startAnchor("", [], []);
 
-  it("Is initialized!", async () => {
-    // Add your test here.
-    const tx = await program.methods.initialize().rpc();
-    console.log("Your transaction signature", tx);
+	  const provider = new BankrunProvider(context);
   });
 });
