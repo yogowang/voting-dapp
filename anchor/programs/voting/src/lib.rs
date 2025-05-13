@@ -15,7 +15,10 @@ pub mod anchor_program {
         poll.candidate_amount=0;
         Ok(())
     }
-    pub fn initialize_candidate(ctx:Context<InitializeCandidate>,candidate_name:String,poll_id:u64) -> Result<()>{
+    pub fn initialize_candidate(ctx:Context<InitializeCandidate>,candidate_name:String,_poll_id:u64) -> Result<()>{
+        let candidate=&mut ctx.accounts.candidate;
+        candidate.candidate_name=candidate_name;
+        candidate.candidate_votes=0;
         Ok(())
     }
 }
