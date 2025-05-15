@@ -52,6 +52,15 @@ describe("voting", () => {
     )
     const smoothieCandidate = await votingProgram.account.candidate.fetch(smoothieAddress);
     console.log(smoothieCandidate);
+    expect(smoothieCandidate.candidateVotes.toNumber()).to.equal(0);
+
+    const [crepeAddress] = PublicKey.findProgramAddressSync(
+      [new anchor.BN(1).toArrayLike(Buffer, "le", 8),Buffer.from("crepe")],
+      votingAddress,
+    )
+    const crepeCandidate = await votingProgram.account.candidate.fetch(crepeAddress);
+    console.log(crepeCandidate);
+    expect(crepeCandidate.candidateVotes.toNumber()).to.equal(0);
   });
   it("vote", async () => {
 
