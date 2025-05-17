@@ -17,16 +17,39 @@ pub mod anchor_program {
     }
     pub fn initialize_candidate(ctx:Context<InitializeCandidate>,candidate_name:String,_poll_id:u64) -> Result<()>{
         let candidate=&mut ctx.accounts.candidate;
+        let poll=&mut ctx.accounts.poll;
+        poll.candidate_amount+=1;
         candidate.candidate_name=candidate_name;
         candidate.candidate_votes=0;
+        Ok(())
+    }
+    pub fn vote(ctx:Context<Vote>,candidate_name:String,poll_id:u64) -> Result<()>{
+        let candidate=&mut ctx.accounts.candidate;
+        candidate.candidate_votes+=1;
         Ok(())
     }
 }
 #[derive(Accounts)]
 #[instruction(candidate_name:String,poll_id:u64)]
+pub struct Vote<'info>{
+    pub signer: Signer<'info>,
+    #[account(
+    seeds=[poll_id.to_le_bytes().as_ref(),candidate_name.as_bytes()],
+    bump
+    )]
+    pub candidate:Account<'info,Candidate>,
+}
+    
+#[derive(Accounts)]
+#[instruction(candidate_name:String,poll_id:u64)]
 pub struct InitializeCandidate<'info>{
     #[account(mut)]
     pub signer: Signer<'info>,
+    #[account(
+        seeds=[poll_id.to_le_bytes().as_ref()],
+        bump
+    )]
+    pub poll:Account<'info,Poll>,
     #[account(
     init,
     payer=signer,
