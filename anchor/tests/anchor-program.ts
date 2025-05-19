@@ -63,6 +63,15 @@ describe("voting", () => {
     expect(crepeCandidate.candidateVotes.toNumber()).to.equal(0);
   });
   it("vote", async () => {
-
+    await votingProgram.methods.vote("smoothie",
+      new anchor.BN(1)
+    ).rpc()
+     const [smoothieAddress] = PublicKey.findProgramAddressSync(
+      [new anchor.BN(1).toArrayLike(Buffer, "le", 8),Buffer.from("smoothie")],
+      votingAddress,
+    )
+    const smoothieCandidate = await votingProgram.account.candidate.fetch(smoothieAddress);
+    console.log(smoothieCandidate);
+    expect(smoothieCandidate.candidateVotes.toNumber()).to.equal(1);
   });
 });

@@ -26,6 +26,7 @@ pub mod anchor_program {
     pub fn vote(ctx:Context<Vote>,candidate_name:String,poll_id:u64) -> Result<()>{
         let candidate=&mut ctx.accounts.candidate;
         candidate.candidate_votes+=1;
+        msg!("Voted for {} with {} votes",candidate.candidate_name,candidate.candidate_votes);
         Ok(())
     }
 }
@@ -34,6 +35,7 @@ pub mod anchor_program {
 pub struct Vote<'info>{
     pub signer: Signer<'info>,
     #[account(
+        mut,
     seeds=[poll_id.to_le_bytes().as_ref(),candidate_name.as_bytes()],
     bump
     )]
@@ -46,6 +48,7 @@ pub struct InitializeCandidate<'info>{
     #[account(mut)]
     pub signer: Signer<'info>,
     #[account(
+        mut,
         seeds=[poll_id.to_le_bytes().as_ref()],
         bump
     )]
