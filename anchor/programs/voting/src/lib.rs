@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 declare_id!("HrnLkCivatsDhzp7PmLWRdPasPk4o6upf5WgvAoFyGCV");
 
 #[program]
-pub mod anchor_program {
+pub mod voting {
     use super::*;
     pub fn initialize_poll(ctx:Context<InitializePoll>,poll_id: u64,description: String,poll_start: u64,poll_end: u64) -> Result<()>{
         let poll=&mut ctx.accounts.poll;

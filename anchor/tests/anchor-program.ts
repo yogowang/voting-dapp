@@ -1,10 +1,10 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { BankrunProvider, startAnchor } from "anchor-bankrun";
-import { AnchorProgram } from "../target/types/anchor_program";
+import { Voting } from "../target/types/voting";
 import { PublicKey } from "@solana/web3.js";
 import { expect } from "chai";
-const IDL = require("../target/idl/anchor_program.json");
+const IDL = require("../target/idl/voting.json");
 const votingAddress= new PublicKey("HrnLkCivatsDhzp7PmLWRdPasPk4o6upf5WgvAoFyGCV");
 describe("voting", () => {
 
@@ -14,7 +14,7 @@ describe("voting", () => {
   before(async () => {
     context = await startAnchor("", [{name:"voting",programId: votingAddress}], []);
     provider = new BankrunProvider(context);
-    votingProgram = new Program<AnchorProgram>(
+    votingProgram = new Program<Voting>(
       IDL,
       provider,
     );
@@ -39,39 +39,39 @@ describe("voting", () => {
   });
   it("initialize candidate", async () => {
     await votingProgram.methods.initializeCandidate(
-      "smoothie",
+      "thorn",
       new anchor.BN(1),
     ).rpc();
     await votingProgram.methods.initializeCandidate(
-      "crepe",
+      "fuze",
       new anchor.BN(1),
     ).rpc();
     const [smoothieAddress] = PublicKey.findProgramAddressSync(
-      [new anchor.BN(1).toArrayLike(Buffer, "le", 8),Buffer.from("smoothie")],
+      [new anchor.BN(1).toArrayLike(Buffer, "le", 8),Buffer.from("thorn")],
       votingAddress,
     )
     const smoothieCandidate = await votingProgram.account.candidate.fetch(smoothieAddress);
     console.log(smoothieCandidate);
     expect(smoothieCandidate.candidateVotes.toNumber()).to.equal(0);
 
-    const [crepeAddress] = PublicKey.findProgramAddressSync(
-      [new anchor.BN(1).toArrayLike(Buffer, "le", 8),Buffer.from("crepe")],
+    const [fuzeAddress] = PublicKey.findProgramAddressSync(
+      [new anchor.BN(1).toArrayLike(Buffer, "le", 8),Buffer.from("fuze")],
       votingAddress,
     )
-    const crepeCandidate = await votingProgram.account.candidate.fetch(crepeAddress);
-    console.log(crepeCandidate);
-    expect(crepeCandidate.candidateVotes.toNumber()).to.equal(0);
+    const fuzeCandidate = await votingProgram.account.candidate.fetch(fuzeAddress);
+    console.log(fuzeCandidate);
+    expect(fuzeCandidate.candidateVotes.toNumber()).to.equal(0);
   });
   it("vote", async () => {
-    await votingProgram.methods.vote("smoothie",
+    await votingProgram.methods.vote("thorn",
       new anchor.BN(1)
     ).rpc()
-     const [smoothieAddress] = PublicKey.findProgramAddressSync(
-      [new anchor.BN(1).toArrayLike(Buffer, "le", 8),Buffer.from("smoothie")],
+     const [thornAddress] = PublicKey.findProgramAddressSync(
+      [new anchor.BN(1).toArrayLike(Buffer, "le", 8),Buffer.from("thorn")],
       votingAddress,
     )
-    const smoothieCandidate = await votingProgram.account.candidate.fetch(smoothieAddress);
-    console.log(smoothieCandidate);
-    expect(smoothieCandidate.candidateVotes.toNumber()).to.equal(1);
+    const thornCandidate = await votingProgram.account.candidate.fetch(thornAddress);
+    console.log(thornCandidate);
+    expect(thornCandidate.candidateVotes.toNumber()).to.equal(1);
   });
 });
